@@ -1,0 +1,199 @@
+.converterPage-section {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, sans-serif;
+}
+
+.converter-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 2rem 3rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+  animation: slideInFromTop 0.6s ease-out;
+  position: relative;
+  z-index: 10;
+}
+
+.converter-header h1 {
+  color: white;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(45deg, #ffffff, #e0e7ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.converter-header p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.6;
+}
+
+.converter-header strong {
+  color: #ffd700;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.back-button {
+  background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.back-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+  background: linear-gradient(45deg, #ff5252, #d63031);
+}
+
+.back-button:active {
+  transform: translateY(0);
+}
+
+.file-upload-section {
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+  z-index: 5;
+}
+
+.uploader-container {
+  max-width: 600px;
+  z-index: 1;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  animation: slideInFromBottom 0.6s ease-out 0.2s both;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, sans-serif;
+  position: relative;
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .converterPage-section {
+    padding: 1rem;
+  }
+
+  .converter-header {
+    padding: 1.5rem 2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .converter-header h1 {
+    font-size: 2rem;
+  }
+
+  .converter-header p {
+    font-size: 1rem;
+  }
+
+  .back-button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+
+  .uploader-container {
+    padding: 2rem;
+    margin: 0 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .converterPage-section {
+    padding: 0.5rem;
+  }
+
+  .converter-header {
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .converter-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .uploader-container {
+    padding: 1.5rem;
+    margin: 0 0.5rem;
+  }
+}
+
+.converter-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.converter-error {
+  text-align: center;
+  padding: 2rem;
+  color: #d32f2f;
+}
+
+.converter-error .back-button {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.converter-error .back-button:hover {
+  background: #5a6268;
+}

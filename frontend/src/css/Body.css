@@ -1,0 +1,355 @@
+.main-content {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  position: relative;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, sans-serif;
+}
+
+.main-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(
+      circle at 20% 50%,
+      rgba(255, 255, 255, 0.1) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(255, 255, 255, 0.08) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 40% 80%,
+      rgba(255, 255, 255, 0.06) 0%,
+      transparent 50%
+    );
+  animation: floatingParticles 20s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.drop-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: 80vh;
+  gap: 3rem;
+}
+
+.info-section {
+  flex: 1;
+  max-width: 600px;
+  animation: slideInFromLeft 0.8s ease-out;
+}
+
+.tite-section {
+  margin-bottom: 3rem;
+}
+
+.tite-section h2 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  color: white;
+  margin: 0;
+  line-height: 1.1;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.tite-section h2:first-child {
+  background: linear-gradient(45deg, #ffd700, #ffeb3b, #fff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmerText 3s ease-in-out infinite;
+}
+
+.tite-section h2:nth-child(2) {
+  margin-top: 0.5rem;
+  background: linear-gradient(45deg, #ffffff, #e3f2fd, #f8f9fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tite-section p {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+  margin-top: 1.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+
+.cartoon {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: slideInFromRight 0.8s ease-out 0.2s both;
+}
+
+.cartoon-img {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.2));
+  animation: floatAnimation 6s ease-in-out infinite;
+  transition: transform 0.3s ease;
+}
+
+.cartoon-img:hover {
+  transform: scale(1.05) rotate(2deg);
+}
+
+.recommend-section {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  padding: 4rem 2rem;
+  margin-top: 2rem;
+  position: relative;
+  border-radius: 40px 40px 0 0;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+  animation: slideInFromBottom 0.8s ease-out 0.7s both;
+}
+
+.recommend-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+  border-radius: 40px 40px 0 0;
+}
+
+.recommend-cnt {
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.recommend-cnt::before {
+  content: "Popular Converters";
+  display: block;
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.recommend-cnt::after {
+  content: "";
+  position: absolute;
+  top: 4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 2px;
+  animation: expandWidth 1s ease-out 1s both;
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatAnimation {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes shimmerText {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes floatingParticles {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-30px) rotate(120deg);
+  }
+  66% {
+    transform: translateY(30px) rotate(240deg);
+  }
+}
+
+@keyframes rotateBorder {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes expandWidth {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .drop-section {
+    flex-direction: column;
+    text-align: center;
+    padding: 3rem 2rem;
+    gap: 2rem;
+  }
+
+  .info-section {
+    max-width: 100%;
+  }
+
+  .cartoon {
+    order: -1;
+  }
+
+  .cartoon-img {
+    max-width: 400px;
+  }
+
+  .tite-section h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .drop-section {
+    padding: 2rem 1rem;
+  }
+
+  .tite-section p {
+    font-size: 1.1rem;
+  }
+
+  .drop-box {
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+
+  .recommend-section {
+    padding: 3rem 1rem;
+    border-radius: 30px 30px 0 0;
+  }
+
+  .recommend-cnt::before {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .cartoon-img {
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .drop-section {
+    padding: 1.5rem 0.5rem;
+  }
+
+  .tite-section h2 {
+    font-size: clamp(1.8rem, 6vw, 2.5rem);
+  }
+
+  .tite-section p {
+    font-size: 1rem;
+  }
+
+  .drop-box {
+    padding: 1.5rem;
+  }
+
+  .recommend-section {
+    padding: 2rem 0.5rem;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .recommend-cnt::before {
+    font-size: 1.8rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .main-content {
+    scroll-behavior: smooth;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
