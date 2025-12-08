@@ -68,7 +68,7 @@ async function preConvertImage(imageBuffer, targetFormat = 'webp', options = {})
     convertedBuffer = await sharpInstance
       .webp({
         quality: options.quality || 85,
-        effort: options.effort || 4, // 0-6, higher = better compression
+        effort: options.effort || 4, // 0-6 for WebP, higher = better compression
         lossless: false,
         nearLossless: false
       })
@@ -244,9 +244,48 @@ function createMetricsResponse(stegoBuffer, originalMetrics, algorithmMetrics) {
   };
 }
 
+/**
+ * Handles optional pre-conversion of image to AVIF/WebP format
+ * @param {Buffer} imageBuffer - Original image buffer
+ * @param {string|null} outputFormat - Desired output format ('avif' or 'webp')
+ * @param {number} quality - Compression quality (0-100)
+ * @returns {Promise<Object>} - Object with buffer and optional preConversionMetrics
+ */
+async function handlePreConversion(imageBuffer, outputFormat, quality = 80) {
+  if (outputFormat === 'avif' || outputFormat === 'webp') {
+    const converted = await preConvertImage(imageBuffer, outputFormat, { quality });
+    return {
+      buffer: converted.buffer,
+      preConversionMetrics: converted.metrics
+    };
+  }
+  return {
+    buffer: imageBuffer,
+    preConversionMetrics: null
+  };
+}
+
+/**
+ * Gets MIME type from image format
+ * @param {string} format - Image format (png, jpeg, webp, avif)
+ * @returns {string} - MIME type
+ */
+function getMimeTypeFromFormat(format) {
+  const mimeTypes = {
+    'png': 'image/png',
+    'jpeg': 'image/jpeg',
+    'jpg': 'image/jpeg',
+    'webp': 'image/webp',
+    'avif': 'image/avif'
+  };
+  return mimeTypes[format] || 'image/png';
+}
+
 export {
   detectImageFormat,
   preConvertImage,
+  handlePreConversion,
   compressEncodedImage,
-  createMetricsResponse
+  createMetricsResponse,
+  getMimeTypeFromFormat
 };
