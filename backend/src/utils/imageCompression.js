@@ -5,7 +5,9 @@ const COMPRESSION_MESSAGES = {
   FORMAT_CHANGED: (originalFormat, outputFormat, algorithm) => 
     `Image format changed from ${originalFormat} to ${outputFormat} (required for ${algorithm.toUpperCase()} algorithm). This may result in larger file size.`,
   OPTIMIZED: (outputFormat) => 
-    `Optimized compression applied while maintaining ${outputFormat.toUpperCase()} format.`
+    `Optimized compression applied while maintaining ${outputFormat.toUpperCase()} format.`,
+  PRE_CONVERTED: (originalFormat, outputFormat) =>
+    `Image pre-converted from ${originalFormat.toUpperCase()} to ${outputFormat.toUpperCase()} format before encoding for optimal compression.`
 };
 
 /**
@@ -24,18 +26,85 @@ async function detectImageFormat(imageBuffer) {
 }
 
 /**
+ * Pre-converts an image to AVIF or WebP format before encoding.
+ * This allows for better compression and smaller output file sizes.
+ * 
+ * @param {Buffer} imageBuffer - The input image buffer
+ * @param {string} targetFormat - Target format ('avif' or 'webp')
+ * @param {Object} options - Conversion options
+ * @returns {Promise<Object>} - Object containing converted buffer and metrics
+ */
+async function preConvertImage(imageBuffer, targetFormat = 'webp', options = {}) {
+  const originalMetrics = await detectImageFormat(imageBuffer);
+  
+  const sharpInstance = sharp(imageBuffer);
+  let convertedBuffer;
+  
+  if (targetFormat === 'avif') {
+    // AVIF: Best compression, slower encoding
+    // Note: AVIF support depends on Sharp build configuration
+    try {
+      convertedBuffer = await sharpInstance
+        .avif({
+          quality: options.quality || 80,
+          effort: options.effort || 4, // 0-9, higher = better compression but slower
+          chromaSubsampling: '4:4:4' // No chroma subsampling for better quality
+        })
+        .toBuffer();
+    } catch (error) {
+      // Fallback to WebP if AVIF is not supported
+      console.warn('AVIF format not supported, falling back to WebP:', error.message);
+      convertedBuffer = await sharpInstance
+        .webp({
+          quality: options.quality || 85,
+          effort: options.effort || 4,
+          lossless: false
+        })
+        .toBuffer();
+      targetFormat = 'webp';
+    }
+  } else if (targetFormat === 'webp') {
+    // WebP: Good compression, faster than AVIF
+    convertedBuffer = await sharpInstance
+      .webp({
+        quality: options.quality || 85,
+        effort: options.effort || 4, // 0-6, higher = better compression
+        lossless: false,
+        nearLossless: false
+      })
+      .toBuffer();
+  } else {
+    throw new Error(`Unsupported target format: ${targetFormat}. Use 'avif' or 'webp'.`);
+  }
+  
+  return {
+    buffer: convertedBuffer,
+    originalFormat: originalMetrics.format,
+    targetFormat,
+    metrics: {
+      originalSize: originalMetrics.size,
+      convertedSize: convertedBuffer.length,
+      sizeReduction: originalMetrics.size - convertedBuffer.length,
+      sizeReductionPercent: ((originalMetrics.size - convertedBuffer.length) / originalMetrics.size * 100).toFixed(2),
+      note: COMPRESSION_MESSAGES.PRE_CONVERTED(originalMetrics.format, targetFormat)
+    }
+  };
+}
+
+/**
  * Applies optimized compression to the output image to minimize file size
  * while preserving steganography data integrity.
  * 
  * Strategy:
+ * - Supports AVIF/WebP output for better compression
  * - For LSB steganography: Use PNG with optimized compression (lossless required)
- * - For frequency domain methods (DCT/DWT): Can use JPEG with high quality if original was JPEG
+ * - For frequency domain methods (DCT/DWT): Can use AVIF/WebP/JPEG with high quality
  * - For PVD: Use PNG (lossless required for pixel value differences)
  * 
  * @param {Buffer} imageData - Raw image data buffer
  * @param {Object} rawInfo - Raw image info (width, height, channels)
  * @param {Object} options - Compression options
- * @param {string} options.originalFormat - Original image format (png, jpeg, etc.)
+ * @param {string} options.originalFormat - Original image format (png, jpeg, avif, webp, etc.)
  * @param {string} options.algorithm - Steganography algorithm used (lsb, dct, dwt, pvd)
  * @param {number} options.originalSize - Original image file size in bytes
  * @returns {Promise<Object>} - Object containing compressed buffer and metrics
@@ -52,16 +121,49 @@ async function compressEncodedImage(imageData, rawInfo, options = {}) {
   let outputFormat;
   let formatChanged = false;
 
-  // Determine output format and compression strategy based on algorithm
+  // Determine output format and compression strategy based on algorithm and original format
   if (algorithm === 'dct' || algorithm === 'dwt') {
-    // Frequency domain methods are more robust to JPEG compression
-    if (originalFormat === 'jpeg' || originalFormat === 'jpg') {
+    // Frequency domain methods are more robust to lossy compression
+    if (originalFormat === 'avif') {
+      // Try AVIF, fallback to WebP if not supported
+      try {
+        outputBuffer = await sharpInstance
+          .avif({
+            quality: 85,
+            effort: 4,
+            chromaSubsampling: '4:4:4'
+          })
+          .toBuffer();
+        outputFormat = 'avif';
+      } catch (error) {
+        console.warn('AVIF output not supported, using WebP:', error.message);
+        outputBuffer = await sharpInstance
+          .webp({
+            quality: 90,
+            effort: 4,
+            lossless: false
+          })
+          .toBuffer();
+        outputFormat = 'webp';
+        formatChanged = true;
+      }
+    } else if (originalFormat === 'webp') {
+      // Preserve WebP format with high quality
+      outputBuffer = await sharpInstance
+        .webp({
+          quality: 90,
+          effort: 4,
+          lossless: false
+        })
+        .toBuffer();
+      outputFormat = 'webp';
+    } else if (originalFormat === 'jpeg' || originalFormat === 'jpg') {
       // Use JPEG with high quality to preserve embedded data
       outputBuffer = await sharpInstance
         .jpeg({
-          quality: 95, // High quality to minimize data loss
-          chromaSubsampling: '4:4:4', // No chroma subsampling for better preservation
-          mozjpeg: true // Use mozjpeg for better compression
+          quality: 95,
+          chromaSubsampling: '4:4:4',
+          mozjpeg: true
         })
         .toBuffer();
       outputFormat = 'jpeg';
@@ -69,22 +171,22 @@ async function compressEncodedImage(imageData, rawInfo, options = {}) {
       // Use PNG with optimized compression
       outputBuffer = await sharpInstance
         .png({
-          compressionLevel: 9, // Maximum compression
-          adaptiveFiltering: true, // Better compression for photographic images
-          palette: false // Don't use palette (maintain RGB)
+          compressionLevel: 9,
+          adaptiveFiltering: true,
+          palette: false
         })
         .toBuffer();
       outputFormat = 'png';
     }
   } else {
     // LSB and PVD require lossless compression - always use PNG
-    // Note: Converting from JPEG to PNG will increase file size significantly
-    if (originalFormat === 'jpeg' || originalFormat === 'jpg') {
+    // Note: Converting from JPEG/AVIF/WebP to PNG will increase file size
+    if (originalFormat !== 'png') {
       formatChanged = true;
     }
     outputBuffer = await sharpInstance
       .png({
-        compressionLevel: 9, // Maximum compression
+        compressionLevel: 9,
         adaptiveFiltering: true,
         palette: false
       })
@@ -144,6 +246,7 @@ function createMetricsResponse(stegoBuffer, originalMetrics, algorithmMetrics) {
 
 export {
   detectImageFormat,
+  preConvertImage,
   compressEncodedImage,
   createMetricsResponse
 };
