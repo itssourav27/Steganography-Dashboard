@@ -1,5 +1,13 @@
 import sharp from 'sharp';
 
+// Compression notification messages
+const COMPRESSION_MESSAGES = {
+  FORMAT_CHANGED: (originalFormat, outputFormat, algorithm) => 
+    `Image format changed from ${originalFormat} to ${outputFormat} (required for ${algorithm.toUpperCase()} algorithm). This may result in larger file size.`,
+  OPTIMIZED: (outputFormat) => 
+    `Optimized compression applied while maintaining ${outputFormat.toUpperCase()} format.`
+};
+
 /**
  * Detects the format of the input image buffer
  * @param {Buffer} imageBuffer - The input image buffer
@@ -103,27 +111,33 @@ async function compressEncodedImage(imageData, rawInfo, options = {}) {
       formatChanged,
       originalFormat,
       note: formatChanged 
-        ? `Image format changed from ${originalFormat} to ${outputFormat} (required for ${algorithm.toUpperCase()} algorithm). This may result in larger file size.`
-        : `Optimized compression applied while maintaining ${outputFormat.toUpperCase()} format.`
+        ? COMPRESSION_MESSAGES.FORMAT_CHANGED(originalFormat, outputFormat, algorithm)
+        : COMPRESSION_MESSAGES.OPTIMIZED(outputFormat)
     }
   };
 }
 
 /**
  * Creates a standardized response with file size metrics
+ * Note: Currently not used but kept for potential future use
  * @param {Buffer} stegoBuffer - The encoded image buffer
  * @param {Object} originalMetrics - Original image metrics
  * @param {Object} algorithmMetrics - Algorithm-specific metrics
  * @returns {Object} - Complete metrics object
  */
 function createMetricsResponse(stegoBuffer, originalMetrics, algorithmMetrics) {
+  const sizeIncrease = stegoBuffer.length - originalMetrics.size;
+  const increasePercent = originalMetrics.size > 0
+    ? ((sizeIncrease / originalMetrics.size) * 100).toFixed(2)
+    : '0.00';
+  
   return {
     ...algorithmMetrics,
     fileSize: {
       original: originalMetrics.size,
       encoded: stegoBuffer.length,
-      increase: stegoBuffer.length - originalMetrics.size,
-      increasePercent: ((stegoBuffer.length - originalMetrics.size) / originalMetrics.size * 100).toFixed(2)
+      increase: sizeIncrease,
+      increasePercent: increasePercent
     }
   };
 }
