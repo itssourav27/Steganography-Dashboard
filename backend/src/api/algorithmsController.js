@@ -3,7 +3,11 @@ import multer from 'multer';
 import { encodeDCT, decodeDCT } from '../algorithms/dct.js';
 import { encodeDWT, decodeDWT } from '../algorithms/dwt.js';
 import { encodePVD, decodePVD } from '../algorithms/pvd.js';
-import { handlePreConversion, getMimeTypeFromFormat } from '../utils/imageCompression.js';
+
+// ✅ Added detectImageFormat here
+import { handlePreConversion, getMimeTypeFromFormat, detectImageFormat } from '../utils/imageCompression.js';
+
+import { encodeMsHEdgeGrayFT1, decodeMsHEdgeGrayFT1 } from '../algorithms/msHEdgeGrayFT1.js';
 
 const router = express.Router();
 const upload = multer();
@@ -190,6 +194,78 @@ router.post('/pvd/decode', upload.single('image'), async (req, res) => {
     if (!imageFile) return res.status(400).json({ error: 'image required' });
 
     const { payload } = await decodePVD(imageFile.buffer, { passphrase });
+    res.json({ payload: payload.toString('utf8') });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ============ msHEdgeGrayFT1 Routes ============
+
+// POST /api/mshedgegrayft1/encode
+router.post('/mshedgegrayft1/encode', upload.single('image'), async (req, res) => {
+  try {
+    const imageFile = req.file;
+    const payloadText = req.body.payload || '';
+    const bitsPerChannel = parseInt(req.body.bitsPerChannel || '1', 10); // currently used as 1 bit per pixel
+    const encryptPass = req.body.passphrase || null;
+    const userOutputFormat = req.body.outputFormat || null; // format requested by frontend
+    const quality = parseInt(req.body.quality || '85', 10);
+
+    if (!imageFile) return res.status(400).json({ error: 'image required' });
+
+    // 1) Optional pre-conversion (for avif/webp requests)
+    const { buffer: imageBuffer, preConversionMetrics } = await handlePreConversion(
+      imageFile.buffer,
+      userOutputFormat,
+      quality
+    );
+
+    // 2) Detect format of the buffer we actually encode
+    const detected = await detectImageFormat(imageBuffer);
+    const originalFormat = detected.format; // jpeg, png, webp, ...
+
+    // 3) Decide final target format:
+    //    - If user requested: use that
+    //    - Else: keep original format (to avoid PNG blow-up)
+    const targetFormat = userOutputFormat || originalFormat || 'png';
+
+    const payloadBuffer = Buffer.from(payloadText, 'utf8');
+    const opts = {
+      bitsPerChannel,
+      targetFormat,
+      quality
+    };
+    if (encryptPass) opts.encrypt = { passphrase: encryptPass };
+
+    const { stegoBuffer, metrics } = await encodeMsHEdgeGrayFT1(imageBuffer, payloadBuffer, opts);
+
+    if (preConversionMetrics) {
+      metrics.preConversion = preConversionMetrics;
+    }
+
+    res.json({
+      imageBase64: stegoBuffer.toString('base64'),
+      mime: getMimeTypeFromFormat(metrics.outputFormat),
+      metrics
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/mshedgegrayft1/decode
+router.post('/mshedgegrayft1/decode', upload.single('image'), async (req, res) => {
+  try {
+    const imageFile = req.file;
+    const bitsPerChannel = parseInt(req.body.bitsPerChannel || '1', 10);
+    const passphrase = req.body.passphrase || null;
+
+    if (!imageFile) return res.status(400).json({ error: 'image required' });
+
+    const { payload } = await decodeMsHEdgeGrayFT1(imageFile.buffer, { bitsPerChannel, passphrase });
     res.json({ payload: payload.toString('utf8') });
   } catch (err) {
     console.error(err);

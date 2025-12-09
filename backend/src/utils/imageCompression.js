@@ -70,7 +70,7 @@ async function preConvertImage(imageBuffer, targetFormat = 'webp', options = {})
         quality: options.quality || 85,
         effort: options.effort || 4, // 0-6 for WebP, higher = better compression
         lossless: false,
-        nearLossless: false
+        nearLossless: true
       })
       .toBuffer();
   } else {

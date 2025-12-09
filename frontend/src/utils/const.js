@@ -44,6 +44,17 @@ export const Converter_List = [
         acceptedFormats: ["png", "bmp", "gif", "webp", "avif", "tiff"],
         endpoint: "img-convert",
     },
+    {
+        logo: jpg,
+        title: "msHEdgeGrayFT1",
+        info: "Use the msHEdgeGrayFT1 fuzzy edge LSB steganography algorithm",
+        targetFormat: "jpg",
+        sourceFormat: "image",
+        acceptedFormats: ["png", "bmp", "gif", "webp", "avif", "tiff"],
+        endpoint: "img-convert",
+        // if your frontend uses a key to choose backend route, you can also add:
+        // algoKey: "mshedgegrayft1"
+    },
 ];
 
 export const MIME_TYPES = {
