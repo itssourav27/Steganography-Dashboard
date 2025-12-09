@@ -1,9 +1,10 @@
 .footer {
-  background: linear-gradient(135deg, #0f1419 0%, #1a1a2e 50%, #16213e 100%);
-  color: #ffffff;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   margin-top: auto;
   position: relative;
   overflow: hidden;
+  border-top: 1px solid var(--border-primary);
 }
 
 .footer::before {
@@ -12,8 +13,9 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, #64ffda, transparent);
+  height: 2px;
+  background: var(--accent-gradient);
+  opacity: 0.6;
 }
 
 .footer-container {
@@ -37,7 +39,7 @@
 .section-title {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #64ffda;
+  color: var(--accent-primary);
   margin-bottom: 1.5rem;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -51,7 +53,7 @@
   left: 0;
   width: 40px;
   height: 2px;
-  background: linear-gradient(90deg, #64ffda, #00bcd4);
+  background: var(--accent-gradient);
   border-radius: 2px;
 }
 
@@ -71,15 +73,15 @@
   width: 40px;
   height: 40px;
   object-fit: contain;
-  filter: brightness(1.2);
+  filter: brightness(1.2) drop-shadow(0 0 10px rgba(0, 255, 136, 0.3));
 }
 
 .company-name {
   font-size: 1.8rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-primary);
   letter-spacing: 2px;
-  text-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
+  text-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
 }
 
 .social-links {
@@ -93,230 +95,73 @@
   justify-content: center;
   width: 45px;
   height: 45px;
-  background: rgba(100, 255, 218, 0.1);
-  border: 1px solid rgba(100, 255, 218, 0.2);
+  background: rgba(0, 255, 136, 0.05);
+  border: 1px solid var(--border-accent);
   border-radius: 50%;
-  color: #64ffda;
+  color: var(--accent-primary);
   text-decoration: none;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.social-link::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background: radial-gradient(
-    circle,
-    rgba(100, 255, 218, 0.2) 0%,
-    transparent 70%
-  );
-  transition: all 0.3s ease;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-}
-
-.social-link:hover::before {
-  width: 100px;
-  height: 100px;
+  font-size: 1.2rem;
+  transition: all var(--transition-base);
 }
 
 .social-link:hover {
-  background: rgba(100, 255, 218, 0.2);
-  border-color: #64ffda;
+  background: var(--accent-primary);
+  color: var(--bg-primary);
   transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(100, 255, 218, 0.3);
+  box-shadow: var(--shadow-neon);
 }
 
-.footer-nav {
+.footer-links {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
-.nav-link,
-.home-link {
-  color: #b0b0b0;
+.footer-link {
+  color: var(--text-secondary);
   text-decoration: none;
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
+  transition: all var(--transition-base);
   padding: 0.5rem 0;
-  position: relative;
-  border-bottom: 1px solid transparent;
+  display: inline-block;
 }
 
-.nav-link::before,
-.home-link::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 0;
-  height: 1px;
-  background: #64ffda;
-  transition: width 0.3s ease;
-}
-
-.nav-link:hover,
-.home-link:hover {
-  color: #64ffda;
-  padding-left: 1rem;
-  transform: translateX(5px);
-}
-
-.nav-link:hover::before,
-.home-link:hover::before {
-  width: 100%;
-}
-
-.contact-info {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.contact-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
-}
-
-.contact-item:hover {
-  background: rgba(100, 255, 218, 0.05);
-  border-color: rgba(100, 255, 218, 0.2);
-  transform: translateY(-2px);
-}
-
-.contact-item svg {
-  color: #64ffda;
-  flex-shrink: 0;
-}
-
-.contact-link {
-  color: #b0b0b0;
-  text-decoration: none;
-  transition: color 0.3s ease;
-  font-size: 0.95rem;
-}
-
-.contact-link:hover {
-  color: #64ffda;
+.footer-link:hover {
+  color: var(--accent-primary);
+  padding-left: 0.5rem;
 }
 
 .footer-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  border-top: 1px solid var(--border-primary);
   padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  margin-top: 2rem;
-}
-
-.copyright p {
-  color: #888;
+  text-align: center;
+  color: var(--text-tertiary);
   font-size: 0.9rem;
-  margin: 0;
 }
 
-.scroll-top-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 45px;
-  height: 45px;
-  background: linear-gradient(135deg, #64ffda, #00bcd4);
-  border: none;
-  border-radius: 50%;
-  color: #1a1a2e;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(100, 255, 218, 0.3);
+.footer-bottom p {
+  margin: 0.5rem 0;
 }
 
-.scroll-top-btn:hover {
-  transform: translateY(-3px) scale(1.1);
-  box-shadow: 0 6px 20px rgba(100, 255, 218, 0.4);
-  background: linear-gradient(135deg, #00bcd4, #64ffda);
+.footer-bottom a {
+  color: var(--accent-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
 }
 
-.scroll-top-btn:active {
-  transform: translateY(-1px) scale(1.05);
+.footer-bottom a:hover {
+  color: var(--accent-secondary);
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
 }
 
 @media (max-width: 768px) {
   .footer-container {
     padding: 2rem 1rem 1rem;
   }
-
   .footer-content {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
-
-  .footer-bottom {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
-  }
-
-  .social-links {
-    justify-content: center;
-  }
-
   .company-name {
     font-size: 1.5rem;
   }
-}
-
-@media (max-width: 480px) {
-  .footer-container {
-    padding: 1.5rem 1rem 1rem;
-  }
-
-  .section-title {
-    font-size: 1.1rem;
-  }
-
-  .social-link {
-    width: 40px;
-    height: 40px;
-  }
-
-  .scroll-top-btn {
-    width: 40px;
-    height: 40px;
-  }
-
-  .contact-item {
-    padding: 0.5rem;
-  }
-}
-
-@keyframes bounce {
-  0%,
-  20%,
-  50%,
-  80%,
-  100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-5px);
-  }
-  60% {
-    transform: translateY(-3px);
-  }
-}
-
-.scroll-top-btn:hover {
-  animation: bounce 1s ease-in-out;
 }

@@ -58,7 +58,7 @@
    ================================= */
 .main-content {
     min-height: 100vh;
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 50%, var(--color-accent) 100%);
+    background: var(--bg-primary);
     position: relative;
     overflow: hidden;
     font-family: var(--font-family-base);
@@ -71,10 +71,23 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 40% 80%, rgba(255, 255, 255, 0.06) 0%, transparent 50%);
+    background-image: 
+        radial-gradient(circle at 20% 30%, rgba(0, 255, 136, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 60%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(255, 0, 110, 0.03) 0%, transparent 50%);
     animation: floatingParticles 20s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.main-content::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(180deg, transparent 0%, var(--bg-primary) 100%);
     pointer-events: none;
 }
 
@@ -135,19 +148,20 @@
 }
 
 .gradient-text {
-    background: linear-gradient(45deg, #ffd700, #ffeb3b, #fff);
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary), var(--accent-tertiary));
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     animation: shimmerText 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.3));
 }
 
 /* Page Description */
 .page-description {
     font-size: var(--font-size-lg);
-    color: rgba(255, 255, 255, 0.95);
-    line-height: 1.6;
+    color: var(--text-secondary);
+    line-height: 1.8;
     margin: 0 0 2rem 0;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     animation: fadeInUp 0.8s ease-out 0.3s both;
@@ -288,13 +302,14 @@
    Modules Section
    ================================= */
 .recommend-section {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
+    background: linear-gradient(135deg, rgba(12, 12, 14, 0.82), rgba(22, 22, 26, 0.72));
+    backdrop-filter: blur(18px) saturate(1.2);
     padding: var(--spacing-lg) var(--spacing-md);
     margin-top: var(--spacing-md);
     position: relative;
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     animation: slideInFromBottom 0.8s ease-out 0.7s both;
 }
 
@@ -321,7 +336,7 @@
     text-align: center;
     font-size: var(--font-size-xl);
     font-weight: 700;
-    color: var(--color-text-primary);
+    color: #ffffff;
     margin-bottom: var(--spacing-lg);
     position: relative;
 }

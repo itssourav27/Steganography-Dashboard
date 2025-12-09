@@ -144,7 +144,7 @@ const Body = ({ className = "", onModuleSelect = () => {} }) => {
                                 {/* Stats Section */}
                                 <div className="hero-stats" role="list">
                                     <div className="stat-item" role="listitem">
-                                        <span className="stat-value">4</span>
+                                        <span className="stat-value">5</span>
                                         <span className="stat-label">Algorithms</span>
                                     </div>
                                     <div className="stat-item" role="listitem">
